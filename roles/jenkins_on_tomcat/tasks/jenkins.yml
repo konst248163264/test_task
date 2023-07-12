@@ -1,0 +1,17 @@
+---
+- name: jenkins | Copy jenkins.war to remote host
+  copy:
+    src: "{{ jenkins_war }}"
+    dest: "{{ tomcat_dir }}/webapps"
+
+- name: jenkins | Wait until Jenkins generate initial password
+  wait_for:
+    timeout: "{{ jenkins_max_passwd_wait }}"
+    path: "{{ tomcat_dir }}/.jenkins/secrets/initialAdminPassword"
+    state: present
+
+- name: jenkins | Fetch admin password from app server
+  fetch:
+    src: "{{ tomcat_dir }}/.jenkins/secrets/initialAdminPassword"
+    dest: ./artifacts/jenkins/jenkinsPassword
+    flat: true

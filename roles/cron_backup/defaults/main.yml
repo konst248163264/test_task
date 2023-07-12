@@ -1,0 +1,16 @@
+---
+# defaults file for cron_backup
+
+cron_name: backup_nginx
+cron_minute: 1
+cron_hour: 1
+cron_day: "*"
+cron_weekday: "*"
+cron_month: "*"
+
+agent_user: backup_agent
+collector_user: backup_collector
+
+backup_dir: /etc/nginx/sites-available
+
+

@@ -1,0 +1,36 @@
+---
+# tasks file for nginx
+
+- name: nginx | Install Nginx
+  apt:
+    update_cache: true
+    name: nginx
+    state: present
+
+- name: nginx | Start and enable Nginx
+  systemd:
+    name: nginx
+    enabled: true
+    state: started
+
+- name: nginx | Disable default Nginx conf
+  file:
+    path: "{{ nginx_dir }}/sites-enabled/default"
+    state: absent
+  notify:
+    - Reload Nginx 
+
+- name: nginx | Copy proxy server configuration 
+  template:
+    src: jenkins_proxy.j2
+    dest: "{{ nginx_dir }}/sites-available/jenkins_proxy"
+  notify:
+    - Reload Nginx 
+
+- name: nginx | Enable configuration
+  file:
+    src: "{{ nginx_dir }}/sites-available/jenkins_proxy"
+    dest: "{{ nginx_dir }}/sites-enabled/jenkins_proxy"
+    state: link
+  notify:
+    - Reload Nginx 

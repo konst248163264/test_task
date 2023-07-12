@@ -1,0 +1,8 @@
+---
+# defaults file for share_ssh_pub_key
+
+crypto_type: rsa
+key_dir: /home/backup_collector/.ssh
+pub_key: id_rsa.pub
+owner: backup_collector
+group: backup_collector

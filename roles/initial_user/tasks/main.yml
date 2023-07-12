@@ -1,0 +1,20 @@
+---
+- name: Create the '{{ new_ansible_user }}' user
+  user: 
+    name: "{{ new_ansible_user }}"
+    state: present 
+    createhome: yes 
+    shell: /bin/bash
+
+- name: Allow '{{ new_ansible_user }}' to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    line: 'superuser ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Set up authorized keys for the '{{ new_ansible_user }}' user
+  authorized_key: 
+    user: "{{ new_ansible_user }}"
+    key: "{{ item }}"
+  with_file:
+    - ~/.ssh/id_rsa.pub

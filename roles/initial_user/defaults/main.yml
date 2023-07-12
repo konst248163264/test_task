@@ -1,0 +1,6 @@
+---
+# defaults file for initial_user
+root_user: vagrant
+root_passwd: vagrant
+ssh_port: 22
+new_ansible_user: superuser

@@ -1,0 +1,23 @@
+---
+# tasks file for share_ssh_pub_key
+
+- name: Ensure .ssh directory exists
+  file:
+    path: "{{ key_dir }}"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    state: directory
+
+- name: Generate SSH keypair
+  community.crypto.openssh_keypair:
+    type: "{{ crypto_type }}"
+    path: "{{ key_dir }}/id_ssh_{{ crypto_type }}"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+  register: keypair
+
+- name: Fetch pub key to host
+  fetch:
+    src: "{{ keypair.filename }}.pub"
+    dest: "./artifacts/ssh/{{ inventory_hostname }}.pub"
+    flat: true

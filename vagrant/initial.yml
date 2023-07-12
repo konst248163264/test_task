@@ -1,0 +1,26 @@
+---
+
+- name: Set up passwordless connection to host
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    - root_user: root
+    - root_passwd: a3KrWRs72Zce7fdk
+    - ssh_port: 22
+
+  tasks:
+    - name: Copy SSH key to host
+      shell: "sshpass -p {{ root_passwd }} ssh-copy-id -o StrictHostKeyChecking=no -p {{ ssh_port }}  {{ root_user }}@{{ hostvars[item].ansible_host }}"
+      loop: "{{ groups['all'] }}"
+
+- name: Create Ansible User
+  hosts: all
+  become: yes
+  gather_facts: false
+
+  vars:
+    - ansible_user: root
+
+  roles:
+    - initial_user

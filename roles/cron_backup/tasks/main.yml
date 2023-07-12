@@ -1,0 +1,14 @@
+---
+# tasks file for cron_backup
+
+- name: Add cron_job with rsync 
+  cron:
+    user: "{{ collector_user }}"
+    job: "rsync -aAX --delete -e 'ssh -p22 -o StrictHostKeyChecking=no -i /home/backup_collector/.ssh/id_ssh_rsa'  {{ agent_user }}@{{ hostvars[item].ansible_host }}:{{ backup_dir }}/ /home/{{ collector_user }}/bak/"
+    name: "{{ cron_name }}"
+    minute: "{{ cron_minute }}"
+    hour: "{{ cron_hour }}"
+    day: "{{ cron_day }}"
+    month: "{{ cron_month }}"
+    weekday: "{{ cron_weekday }}"
+  loop: "{{ groups['web_servers'] }}"

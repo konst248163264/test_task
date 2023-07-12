@@ -1,0 +1,6 @@
+---
+# defaults file for add_user
+
+new_user: backup_agent
+new_group: backup_agent
+home: no

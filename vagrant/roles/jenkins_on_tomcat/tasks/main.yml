@@ -1,0 +1,6 @@
+---
+# tasks file for jenkins_on_tomcat
+
+- import_tasks: apache_tomcat.yml
+
+- import_tasks: jenkins.yml

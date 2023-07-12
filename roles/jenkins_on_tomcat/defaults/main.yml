@@ -1,0 +1,15 @@
+---
+# defaults file for jenkins_on_tomcat
+
+# tomcat
+tomcat_dir: /opt/tomcat
+
+tomcat_group: tomcat
+tomcat_user: tomcat
+
+tomcat_archive: "apache-tomcat-9.0.76.tar.gz"
+java_version: 8
+
+# jenkins
+jenkins_war: jenkins.war
+jenkins_max_passwd_wait: 300

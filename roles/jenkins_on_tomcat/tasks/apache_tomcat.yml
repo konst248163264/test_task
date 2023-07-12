@@ -1,0 +1,50 @@
+---
+- name: tomcat | Install Java
+  apt:
+    update_cache: true
+    name: "openjdk-{{ java_version }}*"
+    state: present
+
+- name: tomcat | Create Tomcat Group
+  group: 
+    name: "{{ tomcat_group }}"
+    state: present
+
+- name: tomcat | Create Tomcat User
+  user:
+    name: "{{ tomcat_user }}"
+    shell: /bin/false
+    group: "{{ tomcat_group }}"
+    home: "{{ tomcat_dir }}" 
+
+- name: tomcat | Create tomcat's directory
+  file:
+    path: "{{ tomcat_dir }}"
+    state: directory
+
+- name: tomcat | Get and extract apache-tomcat
+  unarchive:
+    src: "{{ tomcat_archive }}"
+    dest: "{{ tomcat_dir }}"
+    extra_opts: [--strip-components=1]
+
+- name: tomcat | Change ownership and permisions on "{{ tomcat_dir }}"
+  file:
+    path: "{{ tomcat_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: '0770'
+
+- name: tomcat | Generate a systemd Unit File
+  template:
+    src: tomcat.service.j2
+    dest: /etc/systemd/system/tomcat.service
+
+- name: tomcat | Start and enable Tomcat service
+  systemd:
+    daemon_reload: true
+    enabled: true
+    state: started
+    name: tomcat 

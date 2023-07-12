@@ -1,0 +1,24 @@
+---
+# tasks file for add_user
+
+- name: Create '{{ new_group }}' group
+  group:
+    name: "{{ new_group }}"
+    state: present
+
+
+- name: Create '{{ new_user }}' user
+  user:
+    name: "{{ new_user }}"
+    state: present
+    createhome: "{{ home }}"
+    shell: /bin/bash
+    group: "{{ new_group }}"
+
+- name: Set up authorized key for the '{{ new_user }}' user
+  authorized_key:
+    user: "{{ new_user }}"
+    key: "{{ lookup('file', item) }}"
+  with_fileglob:
+    - "{{ pub_key_dir }}/*"
+  when: pub_key_dir is defined

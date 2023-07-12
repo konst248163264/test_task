@@ -1,0 +1,64 @@
+---
+
+- name: Install Jenkins on Apache Tomcat
+  hosts: app_servers
+  become: yes
+  gather_facts: false
+
+  roles:
+    - jenkins_on_tomcat
+
+- name: Install and set up Nginx Proxy
+  hosts: web_servers
+  become: yes
+  gather_facts: false
+
+  roles:
+    - nginx
+
+
+- name: Create a '{{ new_user }}' user and gen key for him
+  hosts: app_servers
+  become: yes
+  gather_facts: false
+
+  roles:
+    - role: add_user
+      vars:
+        new_user: backup_collector
+        new_group: backup_collector
+        home: yes
+    - role: gen_ssh_key
+      vars:
+        owner: "{{ new_user }}"
+        group: "{{ new_group }}"
+        key_dir: "/home/{{ new_user }}/.ssh"
+
+- name: Create a '{{ new_user }}' user and set authorized keys for him
+  hosts: web_servers
+  become: yes
+  gather_facts: false
+
+  roles:
+    - role: add_user
+      vars:
+        new_user: backup_agent
+        new_group: backup_agent
+        home: yes
+        pub_key_dir: artifacts/ssh/
+
+- name: Add cron_backup job
+  hosts: app_servers
+  become: yes
+  gather_facts: false
+
+  roles:
+    - role: cron_backup
+      vars:
+        cron_name: backup_nginx
+        cron_minute: 29
+        cron_hour: 20
+        agent_user: backup_agent 
+        collector_user: backup_collector
+        backup_dir: /etc/nginx/sites-available
+

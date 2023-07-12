@@ -1,0 +1,6 @@
+---
+# defaults file for nginx
+
+nginx_port: 80
+nginx_dir: /etc/nginx
+tomcat_port: 8080
